@@ -37,6 +37,8 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "LibraryApi",
+    'rest_framework',
 ]
 
 MIDDLEWARE = [
@@ -72,13 +74,17 @@ WSGI_APPLICATION = "LmsBackend.wsgi.application"
 
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
-
 DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'LMSDB',
+        'HOST': 'localhost',
+        'USER': 'root',  # Your MySQL username
+        'PASSWORD': '12WWdf$$k',  # Your MySQL password
+        'PORT': '3306',  # MySQL default port
     }
 }
+
 
 
 # Password validation
@@ -98,6 +104,14 @@ AUTH_PASSWORD_VALIDATORS = [
         "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",
     },
 ]
+
+REST_FRAMEWORK = {
+    # Use Django's standard `django.contrib.auth` permissions,
+    # or allow read-only access for unauthenticated users.
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
+    ]
+}
 
 
 # Internationalization
