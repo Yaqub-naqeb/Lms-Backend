@@ -1,4 +1,5 @@
 from django.shortcuts import render,HttpResponse
+from rest_framework.response import Response
 from rest_framework import viewsets
 from .models import Book
 from .serializers import BookSerializer
@@ -25,7 +26,20 @@ class BookViewSet(viewsets.ModelViewSet):
     authentication_classes = [JWTAuthentication, TokenAuthentication, SessionAuthentication]
     permission_classes = [IsAuthenticatedOrReadOnly]
     pagination_class = CustomPagination 
-    
+    def list(self, request, *args, **kwargs):
+        # Get the queryset of all books
+        queryset = self.filter_queryset(self.get_queryset())
+        
+        # Calculate the count of all books
+        book_count = queryset.count()
+
+        # Serialize the data and include the count
+        serializer = BookSerializer(queryset, many=True)
+        data = {
+            'book_count': book_count,
+            'books': serializer.data
+        }
+        return Response(data)
     
     
     
