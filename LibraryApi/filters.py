@@ -7,4 +7,4 @@ class BookFilter(django_filters.FilterSet):
 
     class Meta:
         model = Book
-        fields = ['category__name']  # Specify the fields you want to filter on
+        fields = ['title','category__name']  # Specify the fields you want to filter on
