@@ -112,3 +112,11 @@ class BookViewSet(viewsets.ModelViewSet):
 
         serializer = BookSerializer(queryset, many=True)
         return Response(serializer.data)
+    
+    # for image
+    
+    @action(detail=False, methods=['GET'])
+    def custom_action(self, request):
+        # Your custom action logic goes here
+        data = {"message": "This is a custom action!"}
+        return Response(data)
