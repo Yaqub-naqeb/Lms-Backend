@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt',
     'rest_framework',
     'django_filters',
+    'corsheaders',
     
 ]
 
@@ -53,7 +54,23 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+        'corsheaders.middleware.CorsMiddleware',
 ]
+
+
+CORS_ALLOW_ALL_ORIGINS = False  # Set this to True if you want to allow all origins (not recommended for production).
+# CORS_ALLOWED_ORIGINS = [
+#     "http://yourfrontenddomain.com",
+#     "https://yourfrontenddomain.com",
+# ]
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:*",
+]
+
+
+
+
+
 
 ROOT_URLCONF = "LmsBackend.urls"
 
@@ -86,6 +103,10 @@ DATABASES = {
         'USER': 'root',  # Your MySQL username
         'PASSWORD': '12WWdf$$k',  # Your MySQL password
         'PORT': '3306',  # MySQL default port
+        'OPTIONS': {
+            'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
+            'read_default_file': '/etc/mysql/my.cnf',  # This may vary based on your MySQL configuration
+        },
     }
 }
 
