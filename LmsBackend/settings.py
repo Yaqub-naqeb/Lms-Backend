@@ -49,29 +49,26 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
+    'corsheaders.middleware.CorsMiddleware',
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
-        'corsheaders.middleware.CorsMiddleware',
+        
 ]
 
 
-CORS_ALLOW_ALL_ORIGINS = True # Set this to True if you want to allow all origins (not recommended for production).
-# CORS_ALLOWED_ORIGINS = [
-#     "http://yourfrontenddomain.com",
-#     "https://yourfrontenddomain.com",
-# ]
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:*",
+CORS_ALLOW_ALL_ORIGINS = True 
+
+
+
+
+
+CORS_ALLOW_METHODS = [
+    'DELETE',  # Add other methods as needed
 ]
-
-
-
-
-
 
 ROOT_URLCONF = "LmsBackend.urls"
 
@@ -165,6 +162,7 @@ TIME_ZONE = "UTC"
 USE_I18N = True
 
 USE_TZ = True
+
 
 
 # Static files (CSS, JavaScript, Images)
