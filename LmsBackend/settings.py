@@ -67,7 +67,12 @@ CORS_ALLOW_ALL_ORIGINS = True
 
 
 CORS_ALLOW_METHODS = [
-    'DELETE',  # Add other methods as needed
+    'GET',
+    'PUT',  # Add 'PUT' here
+    'PATCH',
+    'POST',
+    'DELETE',
+    'OPTIONS',
 ]
 
 ROOT_URLCONF = "LmsBackend.urls"
