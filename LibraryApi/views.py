@@ -69,7 +69,7 @@
 # class JustForTest(viewsets.ModelViewSet):
     
     
-    
+from rest_framework.authtoken.models import Token
 from rest_framework import viewsets,status
 from rest_framework.response import Response
 from .models import Book, User
@@ -85,6 +85,10 @@ from rest_framework.authtoken.views import ObtainAuthToken
 from .serializers import UserSerializer
 from django.middleware.csrf import get_token
 from django.views.decorators.csrf import csrf_exempt
+from rest_framework.views import APIView
+from django.contrib.auth import authenticate
+from rest_framework_simplejwt.tokens import RefreshToken
+
 
 
 class CustomPagination(PageNumberPagination):
@@ -133,7 +137,7 @@ class BookViewSet(viewsets.ModelViewSet):
         data = {"message": "This is a custom action!"}
         return Response(data)
 
-# @csrf_exempt
+
 class SignupViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
@@ -147,14 +151,21 @@ class SignupViewSet(viewsets.ModelViewSet):
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
     
 
-# def my_view(request):
-#     # Retrieve the CSRF token from cookies
-#     csrf_token = request.COOKIES.get('csrftoken')
-    
 
-#     # Use csrf_token as needed...
 
-# from django.http import HttpResponse
-# # @csrf_exempt
-# def MyView (request) :
-#  return HttpResponse( 'Hello world')
+class LoginAPIView(APIView):
+    permission_classes = []  # Remove all permission classes
+
+    def post(self, request):
+        username = request.data.get("username")
+        password = request.data.get("password")
+        user = authenticate(username=username, password=password)
+        
+        if user:
+            refresh = RefreshToken.for_user(user)
+            return Response({
+                "access": str(refresh.access_token),
+                "refresh": str(refresh)
+            })
+        else:
+            return Response({"error": "Invalid credentials"}, status=status.HTTP_401_UNAUTHORIZED)
