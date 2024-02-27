@@ -70,17 +70,22 @@
     
     
     
-from rest_framework import viewsets
+from rest_framework import viewsets,status
 from rest_framework.response import Response
-from .models import Book
+from .models import Book, User
 from .serializers import BookSerializer
 from django_filters.rest_framework import DjangoFilterBackend
 from .filters import BookFilter
-from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
+from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly,AllowAny
 from rest_framework.authentication import TokenAuthentication, SessionAuthentication
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.decorators import action
+from rest_framework.authtoken.views import ObtainAuthToken
+from .serializers import UserSerializer
+from django.middleware.csrf import get_token
+from django.views.decorators.csrf import csrf_exempt
+
 
 class CustomPagination(PageNumberPagination):
     page_size = 3
@@ -99,7 +104,10 @@ class BookViewSet(viewsets.ModelViewSet):
     authentication_classes = [JWTAuthentication, TokenAuthentication, SessionAuthentication]
     permission_classes = [IsAuthenticatedOrReadOnly]
     pagination_class = CustomPagination 
-
+    
+    
+    
+   
     @action(detail=False)
     def count(self, request):
         book_count = self.get_queryset().count()
@@ -124,3 +132,29 @@ class BookViewSet(viewsets.ModelViewSet):
         # Your custom action logic goes here
         data = {"message": "This is a custom action!"}
         return Response(data)
+
+# @csrf_exempt
+class SignupViewSet(viewsets.ModelViewSet):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+    permission_classes = [AllowAny]  # Allow anyone to signup
+  
+    def create(self, request):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+    
+
+# def my_view(request):
+#     # Retrieve the CSRF token from cookies
+#     csrf_token = request.COOKIES.get('csrftoken')
+    
+
+#     # Use csrf_token as needed...
+
+# from django.http import HttpResponse
+# # @csrf_exempt
+# def MyView (request) :
+#  return HttpResponse( 'Hello world')

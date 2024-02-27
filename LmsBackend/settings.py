@@ -74,7 +74,7 @@ CORS_ALLOW_METHODS = [
     'DELETE',
     'OPTIONS',
 ]
-
+CORS_ALLOW_CREDENTIALS = True
 ROOT_URLCONF = "LmsBackend.urls"
 
 TEMPLATES = [
