@@ -30,6 +30,7 @@ class User(models.Model):
       return self.username
 
 
+# desc of order books
 
 class Booking(models.Model):
   book = models.ForeignKey(Book, on_delete=models.CASCADE)
