@@ -98,7 +98,7 @@ class CustomPagination(PageNumberPagination):
 class PaginationSize(PageNumberPagination):
     page_size_query_param = 'page_size'
     max_page_size = 100
-    page_size = 6  # Default page size
+    page_size = 10  # Default page size
 
 class BookViewSet(viewsets.ModelViewSet):
     queryset = Book.objects.all()
@@ -110,9 +110,11 @@ class BookViewSet(viewsets.ModelViewSet):
     pagination_class = CustomPagination 
     
     
-    
-   
+    def get_queryset(self):
+        return Book.objects.order_by('-id')
+
     @action(detail=False)
+    
     def count(self, request):
         book_count = self.get_queryset().count()
         return Response({'book_count': book_count})
@@ -151,7 +153,11 @@ class SignupViewSet(viewsets.ModelViewSet):
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
     
 
-
+class UserListView(APIView):
+    def get(self, request):
+        users = User.objects.all()
+        serializer = UserSerializer(users, many=True)
+        return Response(serializer.data)
 
 class LoginAPIView(APIView):
     permission_classes = []  # Remove all permission classes
@@ -164,6 +170,8 @@ class LoginAPIView(APIView):
         if user:
             refresh = RefreshToken.for_user(user)
             return Response({
+                "id": user.id,
+                "username": user.username,
                 "access": str(refresh.access_token),
                 "refresh": str(refresh)
             })

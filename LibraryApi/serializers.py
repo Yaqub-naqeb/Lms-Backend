@@ -8,9 +8,8 @@ class BookSerializer(serializers.ModelSerializer):
     category_name = serializers.SerializerMethodField()
     class Meta:
         model = Book
-        # fields = '__all__'
-        fields = ('id', 'title', 'author', 'genre', 'publication_date', 'is_booked', 'cover_image', 'category_name')
-        
+        fields = '__all__'
+
     def get_category_name(self, obj):
         return obj.category.name if obj.category else None
 
@@ -22,8 +21,8 @@ class BooksWithCountSerializer(serializers.Serializer):
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ('username','email','password')  # Customize fields as needed
-        extra_kwargs = {'password': {'write_only': True}}  # Hide password field
+        fields = ('username','email','password','first_name' , 'last_name' , 'id')  # Customize fields as needed
+        extra_kwargs = {'password': {'write_only': True} , 'id':{'read_only': True}}  # Hide password field
 
     def create(self, validated_data):
         user = User.objects.create_user(**validated_data)

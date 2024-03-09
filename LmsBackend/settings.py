@@ -104,7 +104,7 @@ DATABASES = {
         'NAME': 'LMSDB',
         'HOST': 'localhost',
         'USER': 'root',  # Your MySQL username
-        'PASSWORD': '12WWdf$$k',  # Your MySQL password
+        'PASSWORD': '',  # Your MySQL password
         'PORT': '3306',  # MySQL default port
         'OPTIONS': {
             'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
@@ -137,16 +137,7 @@ REST_FRAMEWORK = {
      'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
-    'DEFAULT_PERMISSION_CLASSES': (
-        'rest_framework.permissions.IsAuthenticated',
-    ),
-    # Use Django's standard `django.contrib.auth` permissions,
-    # or allow read-only access for unauthenticated users.
-    'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly',
-        'rest_framework_simplejwt.authentication.JWTAuthentication',
-
-    ]
+   
 }
 
 SIMPLE_JWT = {
@@ -182,3 +173,5 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+AUTH_USER_MODEL = 'auth.User'
