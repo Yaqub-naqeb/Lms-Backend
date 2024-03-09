@@ -24,11 +24,11 @@ class Book(models.Model):
     added_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)  # Reference to the User model
     publisher = models.CharField(max_length=255 ,  default=None , null=True)  # Name of the publisher
     published_place = models.CharField(max_length=255 ,  default=None , null=True)  # Place where the book is published
-    page_number = models.IntegerField( default=None , null=True)  # Number of pages in the book
+    page_number = models.CharField( max_length=255 , default=None , null=True)  # Number of pages in the book
     dewey_decimal_number = models.CharField(max_length=255 , default=None , null=True)  # Dewey Decimal number (e.g., 999-k)
     dewey_decimal_category_range = models.CharField(max_length=255 , default=None , null=True)  # Dewey Decimal category range
-    book_code = models.IntegerField(default=None , null=True) 
-    updated_by = models.IntegerField(default=None , null=True) 
+    book_code = models.CharField(max_length=255 , default=None , null=True) 
+    updated_by = models.CharField(max_length=255 , default=None , null=True) 
 
 
     def __str__(self):

@@ -9,4 +9,4 @@ class BookFilter(django_filters.FilterSet):
 
     class Meta:
         model = Book
-        fields = ['title','genre' , 'author' , 'publication_date' , 'is_booked' ]  # Specify the fields you want to filter on
+        fields = ['title','genre' , 'author' , 'publication_date' , 'is_booked' , 'added_by' , 'updated_by' ,'dewey_decimal_number' , 'dewey_decimal_category_range'   ,'book_code' , 'page_number' ,'publisher' , 'published_place' ]  # Specify the fields you want to filter on
