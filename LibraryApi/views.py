@@ -165,7 +165,9 @@ class LoginAPIView(APIView):
     def post(self, request):
         username = request.data.get("username")
         password = request.data.get("password")
-        user = authenticate(username=username, password=password)
+        is_staff= request.data.get("is_staff")
+        user = authenticate(username=username, password=password , is_staff= is_staff)
+
         
         if user:
             refresh = RefreshToken.for_user(user)
@@ -173,7 +175,8 @@ class LoginAPIView(APIView):
                 "id": user.id,
                 "username": user.username,
                 "access": str(refresh.access_token),
-                "refresh": str(refresh)
+                "refresh": str(refresh),
+                "is_staff" : user.is_staff
             })
         else:
             return Response({"error": "Invalid credentials"}, status=status.HTTP_401_UNAUTHORIZED)
