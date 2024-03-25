@@ -37,10 +37,10 @@ class Book(models.Model):
 
 
 class Booking(models.Model):
-  book = models.ForeignKey(Book, on_delete=models.CASCADE)
-  user = models.ForeignKey(User, on_delete=models.CASCADE)
-  booking_date = models.DateField()
+    booking_date = models.DateField()
+    book = models.ForeignKey(Book, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
 
-  def __str__(self):
-    return f'Booking for {self.book.title}'
+    def __str__(self):
+        return f'Booking for {self.book.title}'
 

@@ -1,6 +1,6 @@
 # app/urls.py
 from rest_framework.routers import DefaultRouter
-from .views import BookViewSet, SignupViewSet,LoginAPIView , UserListView
+from .views import BookViewSet, SignupViewSet,LoginAPIView , UserListView , BookingListView
 from django.urls import include, path
 
 router = DefaultRouter()
@@ -16,9 +16,8 @@ router.register('signup', SignupViewSet, basename='signup')
 urlpatterns = [
     path('', include(router.urls)),
     path('login/', LoginAPIView.as_view(), name='login'),
-    path('users-auth/' ,UserListView.as_view()  , name='users')
-
-
+    path('users-auth/' ,UserListView.as_view()  , name='users'),
+    path('booking/' ,BookingListView.as_view()  , name='booking')
 ]
 
 # urlpatterns = router.urls

@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Book
+from .models import Book , Booking
 from django.contrib.auth import get_user_model
 
 User = get_user_model()
@@ -30,3 +30,19 @@ class UserSerializer(serializers.ModelSerializer):
         user.save()
         return user
 
+    
+class BookingSerializer(serializers.ModelSerializer):
+    book = BookSerializer()
+    user = UserSerializer()
+
+    class Meta:
+        model = Booking
+        fields = ('booking_date', 'book', 'user')
+
+    def create(self, validated_data):
+        book_data = validated_data.pop('book')
+        user_data = validated_data.pop('user')
+        book = Book.objects.create(**book_data)
+        user = User.objects.create(**user_data)
+        booking = Booking.objects.create(book=book, user=user, **validated_data)
+        return booking

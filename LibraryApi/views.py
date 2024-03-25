@@ -1,79 +1,8 @@
-# from django.shortcuts import render,HttpResponse
-# from rest_framework.response import Response
-# from rest_framework import viewsets
-# from .models import Book
-# from .serializers import BookSerializer
-# from django_filters.rest_framework import DjangoFilterBackend
-# from .filters import BookFilter
-# from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
-# from rest_framework.authentication import TokenAuthentication, SessionAuthentication
-# from rest_framework_simplejwt.authentication import JWTAuthentication
-# from rest_framework.pagination import PageNumberPagination
-
-
-# class CustomPagination(PageNumberPagination):
-#     page_size = 3
-#     page_size_query_param = 'page_size'
-#     max_page_size = 100
-
-
-
-# class BookViewSet(viewsets.ModelViewSet):
-#     queryset = Book.objects.all()
-#     serializer_class = BookSerializer
-#     filter_backends = [DjangoFilterBackend]
-#     filterset_class = BookFilter
-#     authentication_classes = [JWTAuthentication, TokenAuthentication, SessionAuthentication]
-#     permission_classes = [IsAuthenticatedOrReadOnly]
-#     pagination_class = CustomPagination 
-    
-    
-#     def list(self, request, *args, **kwargs):
-#         # Get the queryset of all books
-#         queryset = self.filter_queryset(self.get_queryset())
-        
-#         # Calculate the count of all books
-#         book_count = queryset.count()
-
-#         # Serialize the data and include the count
-#         serializer = BookSerializer(queryset, many=True)
-#         data = {
-#             'book_count': book_count,
-#             'books': serializer.data
-#         }
-#         return Response(data)
-    
-    
-    
-    
-    # queryset = Book.objects.all()
-    # serializer_class = BookSerializer
-    
-    # def get_queryset(self):
-        
-    #     return Book.objects.filter(  )
-    
-     # You can override the create method to handle "Create" operation
-    # def perform_create(self, serializer):
-    #     serializer.save()
-
-    # # You can override the update method to handle "Update" operation
-    # def perform_update(self, serializer):
-    #     serializer.save()
-
-    # You can override the destroy method to handle "Delete" operation
-    # def perform_destroy(self, instance):
-    #     instance.delete()
-
-
-# class JustForTest(viewsets.ModelViewSet):
-    
-    
 from rest_framework.authtoken.models import Token
 from rest_framework import viewsets,status
 from rest_framework.response import Response
-from .models import Book, User
-from .serializers import BookSerializer
+from .models import Book, User , Booking
+from .serializers import BookSerializer , BookingSerializer
 from django_filters.rest_framework import DjangoFilterBackend
 from .filters import BookFilter
 from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly,AllowAny
@@ -180,3 +109,48 @@ class LoginAPIView(APIView):
             })
         else:
             return Response({"error": "Invalid credentials"}, status=status.HTTP_401_UNAUTHORIZED)
+
+class BookingListView(APIView):        
+    def get(self, request):
+        bookings = Booking.objects.all()
+        serializer = BookingSerializer(bookings, many=True)
+        return Response(serializer.data)
+
+    def post(self, request):
+        booking_date = request.data.get("booking_date")
+        book_id = request.data.get("book")
+        user_id = request.data.get("user")
+
+        try:
+            # Create a new booking
+            booking = Booking.objects.create(
+                booking_date=booking_date,
+                book_id=book_id,
+                user_id=user_id
+            )
+            serializer = BookingSerializer(booking)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        except Exception as e:
+            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+    def patch(self, request, pk):
+        try:
+            booking = Booking.objects.get(pk=pk)
+        except Booking.DoesNotExist:
+            return Response({'error': 'Booking does not exist'}, status=status.HTTP_404_NOT_FOUND)
+
+        serializer = BookingSerializer(booking, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+      
+
+    def delete(self, request, booking_id):
+        try:
+            booking = Booking.objects.get(pk=booking_id)
+        except Booking.DoesNotExist:
+            return Response({'error': 'Booking does not exist'}, status=status.HTTP_404_NOT_FOUND)
+
+        booking.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
