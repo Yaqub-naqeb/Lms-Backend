@@ -32,17 +32,22 @@ class UserSerializer(serializers.ModelSerializer):
 
     
 class BookingSerializer(serializers.ModelSerializer):
-    book = BookSerializer()
     user = UserSerializer()
+    admin = UserSerializer(required=False)
+    book = BookSerializer()
 
     class Meta:
         model = Booking
-        fields = ('booking_date', 'book', 'user')
+        fields = ('id', 'booking_date', 'deadline_date', 'user', 'admin', 'book', 'isPending', 'isBooked')
 
     def create(self, validated_data):
-        book_data = validated_data.pop('book')
         user_data = validated_data.pop('user')
-        book = Book.objects.create(**book_data)
+        admin_data = validated_data.pop('admin', None)
+        book_data = validated_data.pop('book')
+
         user = User.objects.create(**user_data)
-        booking = Booking.objects.create(book=book, user=user, **validated_data)
+        admin = User.objects.create(**admin_data) if admin_data else None
+        book = Book.objects.create(**book_data)
+
+        booking = Booking.objects.create(user=user, admin=admin, book=book, **validated_data)
         return booking

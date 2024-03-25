@@ -37,9 +37,15 @@ class Book(models.Model):
 
 
 class Booking(models.Model):
+    id = models.AutoField(primary_key=True)
     booking_date = models.DateField()
-    book = models.ForeignKey(Book, on_delete=models.CASCADE)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    deadline_date = models.DateField(default="2024-01-09")
+    user = models.ForeignKey(User, on_delete=models.CASCADE , related_name='bookings_as_user')
+    admin = models.ForeignKey(User, on_delete=models.CASCADE, related_name='bookings_as_admin', null=True)
+    book = models.ForeignKey(Book, on_delete=models.CASCADE , )
+    isPending = models.BooleanField(default=False)
+    isBooked = models.BooleanField(default=False)
+
 
     def __str__(self):
         return f'Booking for {self.book.title}'

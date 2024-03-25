@@ -118,21 +118,33 @@ class BookingListView(APIView):
 
     def post(self, request):
         booking_date = request.data.get("booking_date")
-        book_id = request.data.get("book")
-        user_id = request.data.get("user")
+        deadline_date = request.data.get("deadline_date")
+        book_data = request.data.get("book")
+        user_data = request.data.get("user")
+        admin_data = request.data.get("admin")  # Optional field, can be None
+        is_pending = request.data.get("isPending", False)
+        is_booked = request.data.get("isBooked", False)
 
         try:
-            # Create a new booking
+            book = Book.objects.get(id=book_data['id'])
+            user = User.objects.get(id=user_data['id'])
+            admin = User.objects.get(id=admin_data['id']) if admin_data else None
+
             booking = Booking.objects.create(
                 booking_date=booking_date,
-                book_id=book_id,
-                user_id=user_id
+                deadline_date=deadline_date,
+                book=book,
+                user=user,
+                admin=admin,
+                isPending=is_pending,
+                isBooked=is_booked
             )
+
             serializer = BookingSerializer(booking)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         except Exception as e:
             return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
-
+        
     def patch(self, request, pk):
         try:
             booking = Booking.objects.get(pk=pk)
