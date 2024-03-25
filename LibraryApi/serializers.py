@@ -17,11 +17,12 @@ class BooksWithCountSerializer(serializers.Serializer):
     book_count = serializers.IntegerField()
     books = BookSerializer(many=True)
     
+
     
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ('username','email','password','first_name' , 'last_name' , 'id')  # Customize fields as needed
+        fields = ('first_name' , 'last_name' , 'username','email','password','id','is_staff')  # Customize fields as needed
         extra_kwargs = {'password': {'write_only': True} , 'id':{'read_only': True}}  # Hide password field
 
     def create(self, validated_data):
@@ -29,6 +30,9 @@ class UserSerializer(serializers.ModelSerializer):
         user.set_password(validated_data['password'])
         user.save()
         return user
+
+    
+    
 
     
 class BookingSerializer(serializers.ModelSerializer):
@@ -51,3 +55,5 @@ class BookingSerializer(serializers.ModelSerializer):
 
         booking = Booking.objects.create(user=user, admin=admin, book=book, **validated_data)
         return booking
+
+
