@@ -1,3 +1,4 @@
+from lib2to3.pgen2.parse import ParseError
 from rest_framework.authtoken.models import Token
 from rest_framework import viewsets,status
 from rest_framework.response import Response
@@ -82,11 +83,6 @@ class SignupViewSet(viewsets.ModelViewSet):
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
     
 
-# class UserListView(APIView):
-#     def get(self, request):
-#         users = User.objects.all()
-#         serializer = UserSerializer(users, many=True)
-#         return Response(serializer.data)
 from rest_framework import generics
 
 
@@ -125,16 +121,38 @@ class LoginAPIView(APIView):
 
 class BookingListView(APIView):        
     def get(self, request):
+        # Retrieve all bookings
         bookings = Booking.objects.all()
+
+        # Filter by admin_id if provided in query parameters
+        admin_id = request.query_params.get('admin_id')
+        if admin_id:
+            try:
+                admin_id = int(admin_id)
+                bookings = bookings.filter(admin__id=admin_id)
+            except ValueError:
+                return Response({'error': 'Invalid admin_id'}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Filter by user_id if provided in query parameters
+        user_id = request.query_params.get('user_id')
+        if user_id:
+            try:
+                user_id = int(user_id)
+                bookings = bookings.filter(user__id=user_id)
+            except ValueError:
+                return Response({'error': 'Invalid user_id'}, status=status.HTTP_400_BAD_REQUEST)
+
         serializer = BookingSerializer(bookings, many=True)
         return Response(serializer.data)
+    
+    
 
     def post(self, request):
         booking_date = request.data.get("booking_date")
         deadline_date = request.data.get("deadline_date")
         book_data = request.data.get("book")
         user_data = request.data.get("user")
-        admin_data = request.data.get("admin")  # Optional field, can be None
+        admin_data = request.data.get("admin")  
         is_pending = request.data.get("isPending", False)
         is_booked = request.data.get("isBooked", False)
 
@@ -179,3 +197,10 @@ class BookingListView(APIView):
 
         booking.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+    
+    
+class BookingDetailView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Booking.objects.all()
+    serializer_class = BookingSerializer
+    
+   
