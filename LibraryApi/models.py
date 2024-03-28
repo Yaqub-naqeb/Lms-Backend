@@ -38,8 +38,8 @@ class Book(models.Model):
 
 class Booking(models.Model):
     id = models.AutoField(primary_key=True)
-    booking_date = models.DateField()
-    deadline_date = models.DateField(default="2024-01-09")
+    booking_date = models.DateField(default="2024-01-09",null=True)
+    deadline_date = models.DateField(default="2024-01-09",null=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE , related_name='bookings_as_user')
     admin = models.ForeignKey(User, on_delete=models.CASCADE, related_name='bookings_as_admin', null=True)
     book = models.ForeignKey(Book, on_delete=models.CASCADE , )
