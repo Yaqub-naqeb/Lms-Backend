@@ -141,9 +141,25 @@ class BookingListView(APIView):
                 bookings = bookings.filter(user__id=user_id)
             except ValueError:
                 return Response({'error': 'Invalid user_id'}, status=status.HTTP_400_BAD_REQUEST)
+            
+            
+            
+            
+         # Filter by user_id if provided in query parameters
+        book_id = request.query_params.get('book_id')
+        if book_id:
+            try:
+                book_id = int(book_id)
+                bookings = bookings.filter(book__id=book_id)
+            except ValueError:
+                return Response({'error': 'Invalid book_id'}, status=status.HTTP_400_BAD_REQUEST)
 
         serializer = BookingSerializer(bookings, many=True)
         return Response(serializer.data)
+
+      
+    
+        
     
     
 
