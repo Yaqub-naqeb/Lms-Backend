@@ -19,5 +19,5 @@ class UserFilter(django_filters.FilterSet):
 
     class Meta:
         model = User
-        fields = [ 'username','is_staff','first_name','last_name' ]  # Specify the fields you want to filter on
+        fields = [ 'username','is_staff','first_name','last_name','id' ]  # Specify the fields you want to filter on
 
