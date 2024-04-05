@@ -29,6 +29,7 @@ class Book(models.Model):
     dewey_decimal_category_range = models.CharField(max_length=255 , default=None , null=True)  # Dewey Decimal category range
     book_code = models.CharField(max_length=255 , default=None , null=True) 
     updated_by = models.CharField(max_length=255 , default=None , null=True) 
+    number_of_copies = models.CharField(max_length=255 , default=None , null=True) 
 
 
     def __str__(self):
